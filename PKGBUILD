@@ -1,5 +1,5 @@
 pkgname=system-sentinel
-pkgver=1.2
+pkgver=1.3
 pkgrel=1
 pkgdesc="Advanced system maintenance"
 arch=('any')
