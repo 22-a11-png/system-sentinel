@@ -1,4 +1,4 @@
-import os, time, platform, webbrowser, shutil
+import os, time, platform, webbrowser, shutil, subprocess
 
 class S:
     HEADER, CYAN, GREEN, WARN, BOLD, END = '\033[95m\033[1m', '\033[96m', '\033[92m', '\033[93m', '\033[1m', '\033[0m'
@@ -46,7 +46,6 @@ def deep_clean(distro):
     dirs_to_clean = [os.path.join(home, "Downloads"), os.path.join(home, ".cache")]
     count = 0
     
-    # Очистка временных файлов пользователя (работает везде)
     for d in dirs_to_clean:
         if os.path.exists(d):
             for f in os.listdir(d):
@@ -59,20 +58,22 @@ def deep_clean(distro):
                     except: pass
                     
     print(f"  {S.GREEN}Removed {count} temporary files.{S.END}")
-    
-    # Умная системная очистка в зависимости от дистрибутива
     print(f"\n{S.CYAN} > Optimizing system package caches...{S.END}")
     time.sleep(0.5)
     
     if distro == "arch":
         print(f"{S.BOLD}Cleaning unused pacman cache...{S.END}")
-         os.system("sudo paccache -r -k 0") 
+        try:
+            subprocess.run(["sudo", "paccache", "-rk0"], check=True)
+        except Exception:
+            subprocess.run(["sudo", "pacman", "-Scc", "--noconfirm"], check=True)
     elif distro == "debian":
         print(f"{S.BOLD}Cleaning apt cache and removing orphan packages...{S.END}")
-        os.system("sudo apt-get clean && sudo apt-get autoremove -y")
+        subprocess.run(["sudo", "apt-get", "clean"], check=True)
+        subprocess.run(["sudo", "apt-get", "autoremove", "-y"], check=True)
     elif distro == "fedora":
         print(f"{S.BOLD}Cleaning dnf package manager cache...{S.END}")
-        os.system("sudo dnf clean all")
+        subprocess.run(["sudo", "dnf", "clean", "all"], check=True)
     else:
         print(f"{S.WARN}Unknown package manager. Skipping system cache cleanup.{S.END}")
     
