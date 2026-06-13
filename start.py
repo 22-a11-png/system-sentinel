@@ -66,7 +66,7 @@ def deep_clean(distro):
     
     if distro == "arch":
         print(f"{S.BOLD}Cleaning unused pacman cache...{S.END}")
-        os.system("sudo pacman -Sc --noconfirm")
+         os.system("sudo paccache -r -k 0") 
     elif distro == "debian":
         print(f"{S.BOLD}Cleaning apt cache and removing orphan packages...{S.END}")
         os.system("sudo apt-get clean && sudo apt-get autoremove -y")
