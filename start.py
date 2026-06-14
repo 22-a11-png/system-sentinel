@@ -21,7 +21,6 @@ def run_local_rootkit_scan():
     home = os.path.expanduser("~")
     bad_indicators = 0
     
-    # 1. Verification of persistence paths
     check_paths = [
         "/usr/local/bin/atomic-lockfile",
         "/usr/bin/atomic-lockfile",
@@ -36,7 +35,6 @@ def run_local_rootkit_scan():
             print(f"  {S.WARN}[ALERT] Malicious indicator found:{S.END} {path}")
             bad_indicators += 1
             
-    # 2. Autostart entry audit
     autostart_dir = os.path.join(home, ".config/autostart")
     if os.path.exists(autostart_dir):
         print(f"{S.BOLD} Analyzing desktop autostart entries...{S.END}")
@@ -45,7 +43,6 @@ def run_local_rootkit_scan():
                 print(f"  {S.WARN}[ALERT] Suspicious autostart entry:{S.END} {item}")
                 bad_indicators += 1
 
-    # 3. Hidden eBPF process check via system process tree
     print(f"{S.BOLD} Verifying background processes...{S.END}")
     try:
         ps_check = subprocess.run(["ps", "aux"], capture_output=True, text=True)
@@ -55,7 +52,6 @@ def run_local_rootkit_scan():
     except Exception:
         pass
 
-    # Final Verdict
     print(f"\n{S.BOLD}========================================={S.END}")
     if bad_indicators == 0:
         print(f"{S.GREEN} RESULT: CLEAN - No local rootkit indicators found.{S.END}")
@@ -81,7 +77,7 @@ def run_advanced_security_check(distro):
             "curl -fsS --proto '=https' https://archlinux.org; "
             "curl -fsS --proto '=https' https://pastes.sh; end | grep -E '^[a-z0-9][a-z0-9._+-]*$' | sort -u); "
             "set affected (comm -12 (pacman -Qqm | sort | psub) (printf '%s\\n' $malware | psub)); "
-            "if test -n \"$affected\"; echo \"AFFECTED:\"; printf '%s\\n' $affected; else; echo \"Clean — \"(count $malware)\" packages checked, none installed.\"; end"
+            "if test -n \"$affected\"; echo \"AFFECTED:\"; printf '%s\\n' $affected; else; echo \"Clean - \"(count $malware)\" packages checked, none installed.\"; end"
         )
         executable_shell = "fish"
     else:
@@ -90,7 +86,7 @@ def run_advanced_security_check(distro):
             "curl -fsS --proto '=https' https://archlinux.org; "
             "curl -fsS --proto '=https' https://pastes.sh; } | grep -E '^[a-z0-9][a-z0-9._+-]*$' | sort -u); "
             "o=$(comm -12 <(pacman -Qqm | sort) <(printf '%s\\n' \"$m\")); "
-            "[ -n \"$o\" ] && { echo \"AFFECTED:\"; printf '%s\\n' \"$o\"; } || echo \"Clean — $(printf '%s\\n' \"$m\" | grep -c .) packages checked, none installed.\""
+            "[ -n \"$o\" ] && { echo \"AFFECTED:\"; printf '%s\\n' \"$o\"; } || echo \"Clean - $(printf '%s\\n' \"$m\" | grep -c .) packages checked, none installed.\""
         )
         executable_shell = "bash"
 
@@ -134,13 +130,18 @@ def deep_clean(distro):
             subprocess.run(["sudo", "paccache", "-rk0"], check=True)
         except Exception:
             subprocess.run(["sudo", "pacman", "-Scc", "--noconfirm"], check=True)
+            
+        print(f"\n{S.CYAN} > Scanning for orphan packages (unused dependencies)...{S.END}")
+        os.system("pacman -Qtdq | xargs -r sudo pacman -Rns --noconfirm")
+        
     elif distro == "debian":
         print(f"{S.BOLD}Cleaning apt cache and removing orphan packages...{S.END}")
         subprocess.run(["sudo", "apt-get", "clean"], check=True)
         subprocess.run(["sudo", "apt-get", "autoremove", "-y"], check=True)
     elif distro == "fedora":
-        print(f"{S.BOLD}Cleaning dnf package manager cache...{S.END}")
+        print(f"{S.BOLD}Cleaning dnf package manager cache and removing leaf nodes...{S.END}")
         subprocess.run(["sudo", "dnf", "clean", "all"], check=True)
+        subprocess.run(["sudo", "dnf", "autoremove", "-y"], check=True)
     else:
         print(f"{S.WARN}Unknown package manager. Skipping system cache cleanup.{S.END}")
     
