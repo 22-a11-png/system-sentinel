@@ -24,7 +24,7 @@ System Sentinel is designed to be fully compatible with the Arch Linux package e
 
 This project follows the core philosophies of the Linux ecosystem. Contributions, bug reports, and feature requests from the community are highly welcome!
 
-** Note to contributors:** This project is actively maintained, but updates are reviewed on a scheduled basis due to school and educational commitments. We are looking for co-maintainers to help review pull requests and run automated security audits!
+ ### Note to contributors This project is actively maintained, but updates are reviewed on a scheduled basis due to school and educational commitments. We are looking for co-maintainers to help review pull requests and run automated security audits!
 
 Feel free to fork the repository, open an issue, or submit a Pull Request. Let's make system maintenance safer and faster together!
 
