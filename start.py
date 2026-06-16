@@ -147,6 +147,40 @@ def deep_clean(distro):
     
     print(f"\n{S.GREEN} > Deep Cleanup complete!{S.END}")
 
+def open_dev_tools():
+    """Sub-menu for professional development tools requested by the community"""
+    while True:
+        os.system('clear')
+        print(f"{S.HEADER}=== DEV TOOLS & ENVIRONMENT CENTER ==={S.END}")
+        print(f" 1. {S.BOLD}Web Text Editors{S.END} (GitHub Dev / StackBlitz)")
+        print(f" 2. {S.BOLD}AI Coding Assistants{S.END} (ChatGPT & GitHub)")
+        print(f" 3. {S.BOLD}Local Terminal Editor{S.END} (Launch Vim)")
+        print(f" 4. {S.BOLD}Local Terminal Editor{S.END} (Launch Nano)")
+        print(f" 5. {S.BOLD}Back to Main Menu{S.END}")
+        
+        choice = input(f"\n{S.CYAN}Select development tool: {S.END}")
+        
+        if choice == "1":
+            print(f"{S.GREEN}Opening online IDE platforms...{S.END}")
+            webbrowser.open("https://github.dev")
+            webbrowser.open("https://stackblitz.com")
+            time.sleep(1)
+        elif choice == "2":
+            print(f"{S.GREEN}Launching AI augmented workspaces...{S.END}")
+            webbrowser.open("https://chatgpt.com")
+            webbrowser.open("https://github.com")
+            time.sleep(1)
+        elif choice == "3":
+            print(f"{S.GREEN}Launching Vim editor...{S.END}")
+            time.sleep(0.5)
+            subprocess.run(["vim"])
+        elif choice == "4":
+            print(f"{S.GREEN}Launching Nano editor...{S.END}")
+            time.sleep(0.5)
+            subprocess.run(["nano"])
+        elif choice == "5" or choice.lower() == "back":
+            break
+
 def launch_menu():
     distro = get_linux_distro()
     while True:
@@ -157,13 +191,12 @@ def launch_menu():
         print(f" 3. {S.BOLD}Security Check{S.END} - Scan for AUR malware")
         print(f" 4. {S.BOLD}Exit{S.END}")
         
-        choice = input(f"\n{S.CYAN}Enter command ID: {S.END}")
+        choice = input(f"\n{S.CYAN}Enter command ID: {S.END}Checking for the ability to merge automatically...
+
+Hang in there while we check the branch's status.")
         
         if choice == "1":
-            webbrowser.open("https://chatgpt.com")
-            webbrowser.open("https://github.com")
-            print(f"{S.GREEN}Work environment initialized.{S.END}")
-            time.sleep(2)
+            open_dev_tools()
         elif choice == "2":
             deep_clean(distro)
             input(f"\n{S.CYAN}Press Enter to return to menu...{S.END}")
