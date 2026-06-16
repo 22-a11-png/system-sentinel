@@ -191,9 +191,7 @@ def launch_menu():
         print(f" 3. {S.BOLD}Security Check{S.END} - Scan for AUR malware")
         print(f" 4. {S.BOLD}Exit{S.END}")
         
-        choice = input(f"\n{S.CYAN}Enter command ID: {S.END}Checking for the ability to merge automatically...
-
-Hang in there while we check the branch's status.")
+        choice = input(f"\n{S.CYAN}Enter command ID: {S.END}")
         
         if choice == "1":
             open_dev_tools()
